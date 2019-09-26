@@ -17,7 +17,8 @@ class Object
 		{
 			Dummy = 0,
 			Ping,
-			Pong
+			Pong,
+			Temperatures
 		} __attribute__( ( __packed__ ) ) ;
 
 		Object( Kind kind = Dummy );
