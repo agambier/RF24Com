@@ -17,6 +17,9 @@ class Tunnel
 		inline bool isReady() const;
 		inline void setPALevel( uint8_t level );
 
+		inline unsigned long timeOut() const;
+		inline void setTimeOut( unsigned long timeOut );
+
 		bool sendObject( const Object &obj ) const;
 		bool getObject( Object &obj ) const;
 
@@ -27,6 +30,7 @@ class Tunnel
 		const uint8_t *m_txPipe;
 		const uint8_t *m_rxPipe;
 		uint8_t m_channel;
+		unsigned long m_timeOut;
 		bool m_isReady;
 };
 
@@ -36,6 +40,12 @@ bool Tunnel::isReady() const {
 }
 void Tunnel::setPALevel( uint8_t level ) {
 	m_rf24->setPALevel( level );
+}
+unsigned long Tunnel::timeOut() const {
+	return m_timeOut;
+}
+void Tunnel::setTimeOut( unsigned long timeOut ) {
+	m_timeOut = timeOut;
 }
 
 }

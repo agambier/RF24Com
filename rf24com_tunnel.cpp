@@ -9,6 +9,7 @@ Tunnel::Tunnel( RF24 &rf24, const uint8_t *txPipe, const uint8_t *rxPipe, uint8_
 	m_txPipe( txPipe ),
 	m_rxPipe( rxPipe ),
 	m_channel( channel ),
+	m_timeOut( 100 ),
 	m_isReady( false )
 {
 	
@@ -87,7 +88,7 @@ bool Tunnel::ping() const
 		if( ( result = getObject( obj ) ) )
 			result = ( Object::Pong == obj.kind() );
 	}
-	while( !result && ( ( millis() - to ) < 500 ) );
+	while( !result && ( ( millis() - to ) < timeOut() ) );
 
 	return result;
 }
