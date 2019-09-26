@@ -8,9 +8,9 @@ namespace RF24Com
 //
 Temperatures::Temperatures() :
 	Object( Object::Temperatures ),
-	m_activedMasks( mapMember< uint8_t >( m_activedMasks ) )
+	m_activeMasks( mapMember< uint8_t >( m_activeMasks ) )
 {
-	*m_activedMasks = 0;
+	*m_activeMasks = 0;
 	for( uint8_t i = 0; i < RF24COM_TEMPERATURES_COUNT; i++ )
 	{
 		mapMember< int16_t >( m_temperatures[ i ] );
@@ -25,7 +25,7 @@ bool Temperatures::isActive( uint8_t id ) const
 	if( !isValidId( id ) ) 
 		return false;
 
-	return ( *m_activedMasks & ( 1 << id ) );
+	return ( *m_activeMasks & ( 1 << id ) );
 }
 
 //
@@ -35,9 +35,9 @@ void Temperatures::setActive( uint8_t id, bool active )
 	if( isValidId( id ) )
 	{
 		if( active )
-			*m_activedMasks |= ( 1 << id );
+			*m_activeMasks |= ( 1 << id );
 		else
-			*m_activedMasks &= ~( 1 << id );
+			*m_activeMasks &= ~( 1 << id );
 	}
 }
 

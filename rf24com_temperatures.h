@@ -23,7 +23,7 @@ class Temperatures : public Object
 	protected:
 		inline bool isValidId( uint8_t id ) const;
 	private:
-		uint8_t *m_activedMasks;	//	Mask of enbaled temperatures
+		uint8_t *m_activeMasks;	//	Mask of enbaled temperatures
 		int16_t *m_temperatures[ RF24COM_TEMPERATURES_COUNT ];
 };
 //	----- inline functions -----
