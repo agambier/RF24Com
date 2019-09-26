@@ -8,9 +8,9 @@ namespace RF24Com
 //
 Temperatures::Temperatures() :
 	Object( Object::Temperatures ),
-	m_enabledMaks( mapMember< uint8_t >( m_enabledMaks ) )
+	m_activedMasks( mapMember< uint8_t >( m_activedMasks ) )
 {
-	*m_enabledMaks = 0;
+	*m_activedMasks = 0;
 	for( uint8_t i = 0; i < RF24COM_TEMPERATURES_COUNT; i++ )
 	{
 		mapMember< int16_t >( m_temperatures[ i ] );
@@ -20,24 +20,24 @@ Temperatures::Temperatures() :
 
 //
 //
-bool Temperatures::isEnabled( uint8_t id ) const
+bool Temperatures::isActive( uint8_t id ) const
 {
 	if( !isValidId( id ) ) 
 		return false;
 
-	return ( *m_enabledMaks & ( 1 << id ) );
+	return ( *m_activedMasks & ( 1 << id ) );
 }
 
 //
 //
-void Temperatures::setEnable( uint8_t id, bool enable )
+void Temperatures::setActive( uint8_t id, bool active )
 {
 	if( isValidId( id ) )
 	{
-		if( enable )
-			*m_enabledMaks |= ( 1 << id );
+		if( active )
+			*m_activedMasks |= ( 1 << id );
 		else
-			*m_enabledMaks &= ~( 1 << id );
+			*m_activedMasks &= ~( 1 << id );
 	}
 }
 

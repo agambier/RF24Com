@@ -12,8 +12,8 @@ class Temperatures : public Object
 	public:
 		Temperatures();
 
-		bool isEnabled( uint8_t id ) const;
-		void setEnable( uint8_t id, bool enable );
+		bool isActive( uint8_t id ) const;
+		void setActive( uint8_t id, bool active );
 
 		int16_t rawTemperature( uint8_t id ) const;
 		void setRawTemperature( uint8_t id, int16_t value );
@@ -23,7 +23,7 @@ class Temperatures : public Object
 	protected:
 		inline bool isValidId( uint8_t id ) const;
 	private:
-		uint8_t *m_enabledMaks;	//	Mask of enbaled temperatures
+		uint8_t *m_activedMasks;	//	Mask of enbaled temperatures
 		int16_t *m_temperatures[ RF24COM_TEMPERATURES_COUNT ];
 };
 //	----- inline functions -----
