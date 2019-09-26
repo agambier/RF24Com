@@ -34,12 +34,21 @@ class Object
 		void printDetails() const;
 #endif
 	protected:
+		template< class T > T* mapMember( T* &member );
+
 	private:
+		uint8_t *m_memberPtr;
 		Kind *m_kind;
 		uint8_t m_data[ RF24COM_OBJECT_DATASIZE ];
 };
 
 //	----- inline functions -----
+template< class T > T* Object::mapMember( T* &member )
+{
+	member = reinterpret_cast< T* >( m_memberPtr );
+	m_memberPtr += sizeof( T );
+	return member;
+}
 Object::Kind Object::kind() const {
 	return *m_kind;
 }

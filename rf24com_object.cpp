@@ -8,10 +8,10 @@ namespace RF24Com
 //
 //
 Object::Object( Kind kind ) :
-	m_kind( nullptr )
+	m_memberPtr( reinterpret_cast< uint8_t* >( &m_data[ 0 ] ) ),
+	m_kind( mapMember< Kind >( m_kind ) )
 {
 	//	Affect pointers' addresses
-	m_kind = reinterpret_cast< Kind*>( &m_data[ RF24COM_OBJECT_KINDIDX ] );
 	setKind( kind );
 }
 
