@@ -1,4 +1,5 @@
 #include "rf24com_tunnel.h"
+#include "rf24com_pingpong.h"
 
 namespace RF24Com
 {
@@ -58,10 +59,14 @@ bool Tunnel::getObject( Object &obj ) const
 		m_rf24->read( obj.dataPtr(), obj.size() );
 
 		//	Process some core object ?
-		if( Object::Ping == obj.kind() )
-		{	//	Send pong back
-			obj.setKind( Object::Pong );
-			sendObject( obj );
+		if( ( Object::PingPong == obj.kind() ))
+		{	//	Get ping object
+			PingPong pingPong;
+			*dynamic_cast< Object* >( &pingPong ) = obj;
+			//	prepare pong
+			pingPong.preparePong();
+			//	send it
+			sendObject( *dynamic_cast< Object* >( &pingPong ) );
 		}
 		else
 			return true;	//	Got a object
@@ -76,8 +81,9 @@ bool Tunnel::getObject( Object &obj ) const
 bool Tunnel::ping() const
 {
 	//	Send ping...
-	Object obj( Object::Ping );
-	if( !sendObject( obj ) )
+	uint32_t key = millis();
+	PingPong pingPong( true, key );
+	if( !sendObject( pingPong ) )
 		return false;
 
 	//	Wait for pong back
@@ -85,8 +91,12 @@ bool Tunnel::ping() const
 	bool result = false;
 	do
 	{
-		if( ( result = getObject( obj ) ) )
-			result = ( Object::Pong == obj.kind() );
+		if( ( result = getObject( pingPong ) ) )
+		{
+			result =	( Object::PingPong == pingPong.kind() )
+					&&	pingPong.isPong()
+					&&	( ~key == pingPong.key() );
+		}
 	}
 	while( !result && ( ( millis() - to ) < timeOut() ) );
 

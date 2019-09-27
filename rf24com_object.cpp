@@ -26,9 +26,7 @@ Object::Object( Kind kind, uint8_t dummyBytes ) :
 const Object& Object::operator = ( const Object &object )
 {
 	//	Copy data but do not override the kind of object
-	memcpy( &m_data[ RF24COM_OBJECT_DATAIDX ],
-			&object.m_data[ RF24COM_OBJECT_DATAIDX ], 
-			sizeof( m_data ) - RF24COM_OBJECT_DATAIDX );
+	memcpy( m_data, object.m_data, RF24COM_OBJECT_PAYLOADSIZE ); 
 	return *this;
 }
 
@@ -40,7 +38,6 @@ const Object* Object::operator = ( const Object *object )
 		*this = *object;
 	return this;
 }
-
 #if defined( DEBUG )		
 //
 //

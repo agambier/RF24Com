@@ -8,8 +8,6 @@ namespace RF24Com
 
 #define RF24COM_OBJECT_PAYLOADSIZE		16	//	Full payload size
 #define RF24COM_OBJECT_DATASIZE			static_cast< uint8_t >( RF24COM_OBJECT_PAYLOADSIZE - 2 ) // Size fo children classes. (payload_size - kind - id)
-#define RF24COM_OBJECT_KINDIDX			0
-#define RF24COM_OBJECT_DATAIDX			sizeof( RF24Com::Object::Kind )
 
 class Object
 {
@@ -17,8 +15,7 @@ class Object
 		enum Kind
 		{
 			Dummy = 0,
-			Ping,
-			Pong,
+			PingPong,
 			Temperatures,		//	List of temperatures
 			GPIOs				//	List of general-purpose digital inputs-outputs
 		} __attribute__( ( __packed__ ) ) ;
@@ -37,6 +34,7 @@ class Object
 
 		const Object& operator = ( const Object &object );
 		const Object* operator = ( const Object *object );
+
 #if defined( DEBUG )		
 		void printDetails() const;
 #endif
