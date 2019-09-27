@@ -6,9 +6,10 @@
 namespace RF24Com
 {
 
-#define RF24COM_OBJECT_DATASIZE		16
-#define RF24COM_OBJECT_KINDIDX		0
-#define RF24COM_OBJECT_DATAIDX		sizeof( RF24Com::Object::Kind )
+#define RF24COM_OBJECT_PAYLOADSIZE		16	//	Full payload size
+#define RF24COM_OBJECT_DATASIZE			static_cast< uint8_t >( RF24COM_OBJECT_PAYLOADSIZE - 2 ) // Size fo children classes. (payload_size - kind - id)
+#define RF24COM_OBJECT_KINDIDX			0
+#define RF24COM_OBJECT_DATAIDX			sizeof( RF24Com::Object::Kind )
 
 class Object
 {
@@ -21,10 +22,14 @@ class Object
 			Temperatures
 		} __attribute__( ( __packed__ ) ) ;
 
-		Object( Kind kind = Dummy );
+		Object( Kind kind = Dummy, uint8_t dummyBytes = 0 );
 
 		inline Kind kind() const;
 		inline void setKind( Kind kind );
+
+		inline uint8_t id() const;
+		inline void setId( uint8_t id );
+
 		inline const uint8_t* data() const;
 		inline uint8_t* dataPtr();
 		inline uint8_t size() const;
@@ -40,7 +45,8 @@ class Object
 	private:
 		uint8_t *m_memberPtr;
 		Kind *m_kind;
-		uint8_t m_data[ RF24COM_OBJECT_DATASIZE ];
+		uint8_t *m_Id;
+		uint8_t m_data[ RF24COM_OBJECT_PAYLOADSIZE ];
 };
 
 //	----- inline functions -----
@@ -50,19 +56,32 @@ template< class T > T* Object::mapMember( T* &member )
 	m_memberPtr += sizeof( T );
 	return member;
 }
-Object::Kind Object::kind() const {
+Object::Kind Object::kind() const 
+{
 	return *m_kind;
 }
-const uint8_t* Object::data() const {
+uint8_t Object::id() const 
+{
+	return *m_Id;
+}
+void Object::setId( uint8_t id ) 
+{
+	*m_Id = id;
+}
+const uint8_t* Object::data() const 
+{
 	return m_data;
 }
-uint8_t* Object::dataPtr() {
+uint8_t* Object::dataPtr() 
+{
 	return m_data;
 }
-uint8_t Object::size() const {
-	return RF24COM_OBJECT_DATASIZE;
+uint8_t Object::size() const 
+{
+	return RF24COM_OBJECT_PAYLOADSIZE;
 }
-void Object::setKind( Kind kind ) {
+void Object::setKind( Kind kind ) 
+{
 	*m_kind = kind;
 }
 

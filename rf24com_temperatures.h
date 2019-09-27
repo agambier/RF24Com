@@ -5,7 +5,7 @@
 
 namespace RF24Com
 {
-#define RF24COM_TEMPERATURES_COUNT	7
+#define RF24COM_TEMPERATURES_COUNT	6
 
 class Temperatures : public Object
 {
