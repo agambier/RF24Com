@@ -29,7 +29,7 @@ bool Tunnel::begin()
 	m_rf24->setChannel( m_channel );
 	m_rf24->setAutoAck( true );	//	Auto ACK
 	m_rf24->setRetries( 15, 15 );	//	15 retries every 4ms
-	m_rf24->setPayloadSize( RF24COM_OBJECT_DATASIZE );
+	m_rf24->setPayloadSize( RF24COM_OBJECT_PAYLOADSIZE );
 	m_rf24->openWritingPipe( m_txPipe );
 	m_rf24->openReadingPipe( 1, m_rxPipe );
 
@@ -56,17 +56,32 @@ bool Tunnel::getObject( Object &obj ) const
 {
 	if( m_rf24->available() )
 	{
+		Serial.println( "----------- Tunnel got data -----------" );
 		m_rf24->read( obj.dataPtr(), obj.size() );
+		obj.printDetails();
+		Serial.print( " Kind : " );
+		Serial.println( obj.kind() );
 
 		//	Process some core object ?
-		if( ( Object::PingPong == obj.kind() ))
-		{	//	Get ping object
-			PingPong pingPong;
+		if( Object::PingPong == obj.kind() )
+		{
+			Serial.print( " IS PING-PONG : " );
+			//	Get ping object
+			PingPong pingPong( false, 0xffffffff );
 			*dynamic_cast< Object* >( &pingPong ) = obj;
-			//	prepare pong
-			pingPong.preparePong();
-			//	send it
-			sendObject( *dynamic_cast< Object* >( &pingPong ) );
+			if( pingPong.isPing() )
+			{
+				pingPong.printDetails();
+				if( pingPong.isPing() )
+					Serial.println( " PING" );
+				else
+					Serial.println( " PONG" );
+				//	prepare pong
+				pingPong.preparePong();
+				//	send it
+				sendObject( *dynamic_cast< Object* >( &pingPong ) );
+				Serial.println( "BYE" );
+			}
 		}
 		else
 			return true;	//	Got a object
