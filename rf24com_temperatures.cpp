@@ -7,7 +7,7 @@ namespace RF24Com
 //
 //
 Temperatures::Temperatures() :
-	Object( Object::Temperatures, 1 ),	//	1 dummy bytes to align members
+	Object( Object::Temperatures, 1 ),	//	1 dummy byte to align for pointers access
 	m_activeMasks( mapMember< uint8_t >( m_activeMasks ) )
 {
 	*m_activeMasks = 0;
