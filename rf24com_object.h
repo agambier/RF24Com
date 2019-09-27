@@ -19,7 +19,8 @@ class Object
 			Dummy = 0,
 			Ping,
 			Pong,
-			Temperatures
+			Temperatures,		//	List of temperatures
+			GPIOs				//	List of general-purpose digital inputs-outputs
 		} __attribute__( ( __packed__ ) ) ;
 
 		Object( Kind kind = Dummy, uint8_t dummyBytes = 0 );
