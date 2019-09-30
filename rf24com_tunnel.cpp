@@ -54,41 +54,29 @@ bool Tunnel::sendObject( const Object &obj ) const
 //
 bool Tunnel::getObject( Object &obj ) const
 {
+	bool result = false;
 	if( m_rf24->available() )
 	{
-		Serial.println( "----------- Tunnel got data -----------" );
+		result = true;
 		m_rf24->read( obj.dataPtr(), obj.size() );
-		obj.printDetails();
-		Serial.print( " Kind : " );
-		Serial.println( obj.kind() );
 
 		//	Process some core object ?
 		if( Object::PingPong == obj.kind() )
-		{
-			Serial.print( " IS PING-PONG : " );
-			//	Get ping object
-			PingPong pingPong( false, 0xffffffff );
+		{	//	Get ping object
+			PingPong pingPong( true );
 			*dynamic_cast< Object* >( &pingPong ) = obj;
 			if( pingPong.isPing() )
-			{
-				pingPong.printDetails();
-				if( pingPong.isPing() )
-					Serial.println( " PING" );
-				else
-					Serial.println( " PONG" );
-				//	prepare pong
+			{	//	prepare and send pong
 				pingPong.preparePong();
-				//	send it
 				sendObject( *dynamic_cast< Object* >( &pingPong ) );
-				Serial.println( "BYE" );
+				//	It was a core object dont give it to the user app layer
+				result = false;				
 			}
 		}
-		else
-			return true;	//	Got a object
 	}
 
 	//	Core object has been handled or no object received...
-	return false;
+	return result;
 }
 
 //
