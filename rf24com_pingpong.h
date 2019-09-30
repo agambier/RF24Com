@@ -9,7 +9,7 @@ namespace RF24Com
 class PingPong : public Object
 {
 	public:
-		PingPong( bool isPing = true, uint32_t key = 0 );
+		PingPong( bool isPing, uint32_t key = 0 );
 
 		inline bool isPing() const;
 		inline void setPing();
