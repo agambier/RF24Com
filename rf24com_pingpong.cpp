@@ -10,6 +10,7 @@ PingPong::PingPong( bool isPing, uint32_t key ) :
 	m_config( mapMember< uint8_t >( m_config ) ),
 	m_key( mapMember< uint32_t >( m_key ) )
 {
+	*m_config = 0;
 	setPingPong( isPing );
 	setKey( key );
 }
