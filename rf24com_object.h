@@ -36,7 +36,7 @@ class Object
 		const Object* operator = ( const Object *object );
 
 #if defined( DEBUG )		
-		void printDetails() const;
+		virtual void printDetails() const;
 #endif
 	protected:
 		template< class T > T* mapMember( T* &member );
