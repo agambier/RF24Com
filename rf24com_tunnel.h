@@ -24,6 +24,7 @@ class Tunnel
 		bool getObject( Object &obj ) const;
 
 		//	----- advanced functions -----
+		bool sendAndReceive( const Object &sentObj, Object &receivedObj, Object::Kind awaitedKind = Object::Dummy ) const;
 		bool ping() const;
 	private:
 		RF24 *m_rf24;

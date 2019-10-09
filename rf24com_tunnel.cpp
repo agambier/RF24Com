@@ -81,29 +81,38 @@ bool Tunnel::getObject( Object &obj ) const
 
 //
 //
-bool Tunnel::ping() const
-{
-	//	Send ping...
-	uint32_t key = millis();
-	PingPong pingPong( true, key );
-	if( !sendObject( pingPong ) )
+bool Tunnel::sendAndReceive( const Object &sentObj, Object &receivedObj, Object::Kind awaitedKind ) const
+{	
+	//	tx
+	if( !sendObject( sentObj ) )
 		return false;
 
-	//	Wait for pong back
+	//	Wait and filter
 	unsigned long to = millis();
 	bool result = false;
 	do
 	{
-		if( ( result = getObject( pingPong ) ) )
-		{
-			result =	( Object::PingPong == pingPong.kind() )
-					&&	pingPong.isPong()
-					&&	( ~key == pingPong.key() );
+		if( ( result = getObject( receivedObj ) ) )
+		{	//	filter it ?
+			if( ( Object::Dummy != awaitedKind ) && ( receivedObj.kind() != awaitedKind ) )
+				result = false;
 		}
 	}
 	while( !result && ( ( millis() - to ) < timeOut() ) );
+	return result;	
+}
 
-	return result;
+//
+//
+bool Tunnel::ping() const
+{
+	//	Send ping...and wait for pong !
+	uint32_t key = millis();
+	PingPong pingPong( true, key );
+	if( !sendAndReceive( pingPong, pingPong, Object::PingPong ) )
+		return false;
+
+	return pingPong.isPong() &&	( ~key == pingPong.key() );
 }
 
 }
